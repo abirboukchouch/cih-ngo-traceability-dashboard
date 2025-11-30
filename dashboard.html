@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NGO Traceability Dashboard | CIH Bank</title>
+    <!-- Cache prevention tags -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-blue: #1a4b8c;
+            --secondary-blue: #2c6fb7;
+            --light-blue: #e6f0fa;
+            --accent-blue: #4a90e2;
+            --white: #ffffff;
+            --light-gray: #f5f7fa;
+            --medium-gray: #e1e5eb;
+            --dark-gray: #6c757d;
+            --text-dark: #343a40;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-gray);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 250px;
+            background: linear-gradient(180deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: var(--white);
+            padding: 1.5rem 1rem;
+            box-shadow: var(--shadow);
+            z-index: 100;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .logo {
+            width: 40px;
+            height: 40px;
+            background-color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+        }
+
+        .logo i {
+            color: var(--primary-blue);
+            font-size: 1.2rem;
+        }
+
+        .logo-text {
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 0.8rem 1rem;
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            border-radius: var(--radius);
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: var(--white);
+        }
+
+        .nav-link i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            flex: 1;
+            padding: 1.5rem 2rem;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .header h1 {
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Dashboard Cards */
+        .dashboard-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .card-icon.blue {
+            background-color: var(--accent-blue);
+        }
+
+        .card-icon.green {
+            background-color: var(--success);
+        }
+
+        .card-icon.orange {
+            background-color: var(--warning);
+        }
+
+        .card-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+            margin-bottom: 0.5rem;
+        }
+
+        .card-change {
+            font-size: 0.9rem;
+            color: var(--success);
+        }
+
+        .card-change.negative {
+            color: var(--danger);
+        }
+
+        /* Charts and Tables */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-container, .table-container {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-blue);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--light-blue);
+            border-radius: var(--radius);
+            color: var(--dark-gray);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        th {
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .status-approved {
+            background-color: rgba(40, 167, 69, 0.1);
+            color: var(--success);
+        }
+
+        .status-pending {
+            background-color: rgba(255, 193, 7, 0.1);
+            color: var(--warning);
+        }
+
+        .status-rejected {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        /* Upload Section */
+        .upload-section {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--medium-gray);
+            border-radius: var(--radius);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: var(--accent-blue);
+            background-color: var(--light-blue);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent-blue);
+            margin-bottom: 1rem;
+        }
+
+        .upload-text {
+            margin-bottom: 1.5rem;
+            color: var(--dark-gray);
+        }
+
+        .btn {
+            padding: 0.7rem 1.5rem;
+            border: none;
+            border-radius: var(--radius);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-blue);
+        }
+
+        /* Eligibility Score */
+        .eligibility-score {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            border-radius: var(--radius);
+            color: var(--white);
+            text-align: center;
+        }
+
+        .score-value {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .score-value.score-1 {
+            color: var(--danger);
+        }
+
+        .score-value.score-2 {
+            color: var(--warning);
+        }
+
+        .score-value.score-3 {
+            color: var(--success);
+        }
+
+        .score-label {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .score-description {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            max-width: 300px;
+        }
+
+        /* Eligibility Indicator */
+        .eligibility-indicator {
+            display: flex;
+            justify-content: center;
+            margin: 1rem 0;
+        }
+
+        .eligibility-dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin: 0 5px;
+            background-color: var(--medium-gray);
+        }
+
+        .eligibility-dot.active {
+            background-color: var(--success);
+        }
+
+        .eligibility-dot.active.score-1 {
+            background-color: var(--danger);
+        }
+
+        .eligibility-dot.active.score-2 {
+            background-color: var(--warning);
+        }
+
+        /* Notifications */
+        .notifications-container {
+            background-color: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem;
+        }
+
+        .notification-item {
+            display: flex;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .notification-icon.success {
+            background-color: var(--success);
+        }
+
+        .notification-icon.warning {
+            background-color: var(--warning);
+        }
+
+        .notification-icon.info {
+            background-color: var(--accent-blue);
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .notification-time {
+            font-size: 0.8rem;
+            color: var(--dark-gray);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                padding: 1rem;
+            }
+            
+            .nav-menu {
+                display: flex;
+                overflow-x: auto;
+            }
+            
+            .nav-item {
+                margin-bottom: 0;
+                margin-right: 0.5rem;
+            }
+            
+            .nav-link {
+                white-space: nowrap;
+            }
+            
+            .dashboard-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .loading {
+            opacity: 0.7;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-container">
+                <div class="logo">
+                    <i class="fas fa-hands-helping"></i>
+                </div>
+                <div class="logo-text">CIH NGO Tracker</div>
+            </div>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Documents</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-money-bill-wave"></i>
+                        <span>Financial Traceability</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Impact Analytics</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-wallet"></i>
+                        <span>Wallet Management</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>NGO Traceability Dashboard</h1>
+                <div class="user-info">
+                    <div class="user-avatar">AM</div>
+                    <div>
+                        <div>Ahmed M.</div>
+                        <div style="font-size: 0.8rem; color: var(--dark-gray);">Education for All NGO</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Cards -->
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Wallet Balance</div>
+                        <div class="card-icon blue">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                    </div>
+                    <div class="card-value" id="walletBalance">Loading...</div>
+                    <div class="card-change">
+                        <i class="fas fa-sync-alt"></i> <span id="lastSync">Updating...</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Active Programs</div>
+                        <div class="card-icon green">
+                            <i class="fas fa-project-diagram"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">8</div>
+                    <div class="card-change">
+                        3 programs completed this quarter
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">Beneficiaries</div>
+                        <div class="card-icon orange">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">1,240</div>
+                    <div class="card-change">
+                        <i class="fas fa-arrow-up"></i> 8% growth
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">CIH Loan Eligibility</div>
+                        <div class="card-icon blue">
+                            <i class="fas fa-star"></i>
+                        </div>
+                    </div>
+                    <div class="card-value">3/3</div>
+                    <div class="card-change">
+                        Fully eligible for CIH financing
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upload Section -->
+            <div class="upload-section">
+                <h2 class="section-title">Upload Documents</h2>
+                <div class="upload-area">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <h3 class="upload-text">Drag & drop donation records, invoices, or receipts</h3>
+                    <p style="color: var(--dark-gray); margin-bottom: 1.5rem;">Supports PDF, JPG, PNG files</p>
+                    <button class="btn btn-primary">
+                        <i class="fas fa-folder-open"></i> Browse Files
+                    </button>
+                </div>
+            </div>
+
+            <!-- Charts and Tables -->
+            <div class="dashboard-grid">
+                <div class="chart-container">
+                    <h2 class="section-title">Financial Overview</h2>
+                    <div class="chart-placeholder">
+                        <canvas id="financialChart"></canvas>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <h2 class="section-title">Recent Transactions</h2>
+                    <div style="max-height: 400px; overflow-y: auto;">
+                        <table id="transactionsTable">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsBody">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; padding: 2rem;">
+                                        <div class="loading">Loading transactions...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Impact and Notifications -->
+            <div class="dashboard-grid">
+                <div class="chart-container">
+                    <h2 class="section-title">Impact Metrics</h2>
+                    <div class="chart-placeholder">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+                <div class="notifications-container">
+                    <h2 class="section-title">Notifications</h2>
+                    <div class="notification-item">
+                        <div class="notification-icon success">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Transaction Validated</div>
+                            <div class="notification-desc">Your program funding has been approved by CIH Bank.</div>
+                            <div class="notification-time">2 hours ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon info">
+                            <i class="fas fa-info"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Loan Eligibility Updated</div>
+                            <div class="notification-desc">Your NGO now qualifies for CIH performance-based loans with score 3/3.</div>
+                            <div class="notification-time">1 day ago</div>
+                        </div>
+                    </div>
+                    <div class="notification-item">
+                        <div class="notification-icon warning">
+                            <i class="fas fa-exclamation"></i>
+                        </div>
+                        <div class="notification-content">
+                            <div class="notification-title">Document Verification Needed</div>
+                            <div class="notification-desc">Please upload receipts for the workshop expenses.</div>
+                            <div class="notification-time">3 days ago</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Eligibility Score -->
+            <div class="eligibility-score">
+                <div class="score-label">CIH Loan Eligibility Score</div>
+                <div class="eligibility-indicator">
+                    <div class="eligibility-dot active score-1"></div>
+                    <div class="eligibility-dot active score-2"></div>
+                    <div class="eligibility-dot active score-3"></div>
+                </div>
+                <div class="score-value score-3">3/3</div>
+                <div class="score-description">
+                    Based on financial transparency, transaction history, and impact documentation. 
+                    Score 3 qualifies your NGO for CIH performance-based loans with favorable terms.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // API Configuration
+        const API_CONFIG = {
+            baseURL: 'https://api.cih.ma', // Replace with actual CIH API base URL
+            contractId: 'LAN193541347060000000001', // NGO's wallet contract ID
+            phoneNumber: '212700446211',
+            identificationType: 'CIN',
+            identificationNumber: 'BK12232'
+        };
+
+        // API Service with proper CIH Wallet Management KIT endpoints
+        class CIHWalletAPI {
+            constructor() {
+                this.baseURL = API_CONFIG.baseURL;
+            }
+
+            async callAPI(endpoint, method = 'GET', body = null, params = {}) {
+                try {
+                    // Build URL with parameters
+                    let url = `${this.baseURL}${endpoint}`;
+                    if (method === 'GET' && Object.keys(params).length > 0) {
+                        const queryParams = new URLSearchParams(params);
+                        url += `?${queryParams.toString()}`;
+                    }
+
+                    const options = {
+                        method: method,
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        }
+                    };
+
+                    if (body && (method === 'POST' || method === 'PUT')) {
+                        options.body = JSON.stringify(body);
+                    }
+
+                    console.log(`Calling CIH API: ${method} ${url}`, body || params);
+
+                    const response = await fetch(url, options);
+                    
+                    if (!response.ok) {
+                        throw new Error(`API Error: ${response.status} ${response.statusText}`);
+                    }
+
+                    const data = await response.json();
+                    return data;
+
+                } catch (error) {
+                    console.error('API call failed:', error);
+                    // Return mock data for demo purposes
+                    return this.getMockData(endpoint, method, body, params);
+                }
+            }
+
+            // Mock data fallback that matches CIH API response structure
+            getMockData(endpoint, method, body, params) {
+                console.log('Using mock data for:', endpoint);
+
+                if (endpoint === '/wallet/balance' && method === 'GET') {
+                    return {
+                        result: {
+                            balance: [
+                                { value: "12556,88" }
+                            ]
+                        }
+                    };
+                }
+
+                if (endpoint === '/wallet/operations' && method === 'GET') {
+                    return {
+                        result: [
+                            {
+                                amount: "15000.00",
+                                Fees: "0",
+                                beneficiaryFirstName: "School",
+                                beneficiaryLastName: "Supplies Inc",
+                                beneficiaryRIB: null,
+                                clientNote: "Education Materials",
+                                contractId: null,
+                                currency: "MAD",
+                                date: "15/11/2023 10:30:00 AM",
+                                dateToCompare: "2023-11-15T10:30:00Z",
+                                frais: [],
+                                numTel: null,
+                                operation: null,
+                                referencedd: "1181798513",
+                                sign: null,
+                                srcDestNumber: "212755123456",
+                                status: "000",
+                                totalAmount: "15000.00",
+                                totalFrai: "0.00",
+                                type: "PAYMENT",
+                                isCanceled: false,
+                                isTierCashIn: false,
+                                totalPage: 1
+                            },
+                            {
+                                amount: "45000.00",
+                                Fees: "0",
+                                beneficiaryFirstName: "Program",
+                                beneficiaryLastName: "Funding",
+                                beneficiaryRIB: null,
+                                clientNote: "Scholarship Disbursement",
+                                contractId: null,
+                                currency: "MAD",
+                                date: "12/11/2023 09:15:00 AM",
+                                dateToCompare: "2023-11-12T09:15:00Z",
+                                frais: [],
+                                numTel: null,
+                                operation: null,
+                                referencedd: "1181798514",
+                                sign: null,
+                                srcDestNumber: "212755123457",
+                                status: "000",
+                                totalAmount: "45000.00",
+                                totalFrai: "0.00",
+                                type: "PAYMENT",
+                                isCanceled: false,
+                                isTierCashIn: false,
+                                totalPage: 1
+                            },
+                            {
+                                amount: "100000.00",
+                                Fees: "0",
+                                beneficiaryFirstName: "CIH",
+                                beneficiaryLastName: "Foundation",
+                                beneficiaryRIB: null,
+                                clientNote: "Donation Received",
+                                contractId: null,
+                                currency: "MAD",
+                                date: "02/11/2023 02:45:00 PM",
+                                dateToCompare: "2023-11-02T14:45:00Z",
+                                frais: [],
+                                numTel: null,
+                                operation: null,
+                                referencedd: "1181798515",
+                                sign: null,
+                                srcDestNumber: "212755123458",
+                                status: "000",
+                                totalAmount: "100000.00",
+                                totalFrai: "0.00",
+                                type: "DEPOSIT",
+                                isCanceled: false,
+                                isTierCashIn: true,
+                                totalPage: 1
+                            }
+                        ]
+                    };
+                }
+
+                if (endpoint === '/wallet/clientinfo' && method === 'POST') {
+                    return {
+                        result: {
+                            adressLine1: "123 Education Street",
+                            city: "Casablanca",
+                            contractId: "LAN233460579578271",
+                            country: "MAR",
+                            description: null,
+                            email: "contact@educationforall.org",
+                            numberOfChildren: null,
+                            phoneNumber: "212700446211",
+                            pidNumber: null,
+                            pidType: "CIN",
+                            products: [
+                                {
+                                    abbreviation: null,
+                                    contractId: "LAN233460579578271",
+                                    description: null,
+                                    email: "contact@educationforall.org",
+                                    level: "1",
+                                    name: "CDP BASIC",
+                                    phoneNumber: "212700446211",
+                                    productTypeld: "000",
+                                    productTypeName: "PARTICULIER",
+                                    provider: "ORANGE",
+                                    rib: "853455230818452878570832",
+                                    solde: "12556.88",
+                                    statusId: "1",
+                                    tierType: "03",
+                                    uid: "000"
+                                }
+                            ],
+                            radical: "",
+                            soldeCumule: "12556.88",
+                            statusId: null,
+                            tierFirstName: "Ahmed",
+                            tierId: "TR2334600322963601",
+                            tierLastName: "M.",
+                            userName: null,
+                            familyStatus: null
+                        }
+                    };
+                }
+
+                // Default mock response
+                return { result: "Mock data - API endpoint not configured" };
+            }
+
+            // 4.4 - Balance consultation
+            async getBalance(contractId) {
+                return await this.callAPI('/wallet/balance', 'GET', null, {
+                    contractid: contractId
+                });
+            }
+
+            // 4.3 - Consultation of transaction history
+            async getTransactionHistory(contractId) {
+                return await this.callAPI('/wallet/operations', 'GET', null, {
+                    contractid: contractId
+                });
+            }
+
+            // 4.2 - Consulting customer information
+            async getCustomerInfo(phoneNumber, identificationType, identificationNumber) {
+                return await this.callAPI('/wallet/clientinfo', 'POST', {
+                    phoneNumber: phoneNumber,
+                    identificationType: identificationType,
+                    identificationNumber: identificationNumber
+                });
+            }
+
+            // 4.5 - Cash IN operation
+            async cashIn(contractId, amount, phoneNumber, level = "2") {
+                // Step 1: Simulation
+                const simulation = await this.callAPI('/wallet/cash/in', 'POST', {
+                    contractId: contractId,
+                    level: level,
+                    phoneNumber: phoneNumber,
+                    amount: amount,
+                    fees: "0"
+                }, { step: 'simulation' });
+
+                // Step 2: Confirmation
+                const confirmation = await this.callAPI('/wallet/cash/in', 'POST', {
+                    token: simulation.result.token,
+                    amount: amount,
+                    fees: "0"
+                }, { step: 'confirmation' });
+
+                return confirmation;
+            }
+
+            // 4.7 - Wallet to Wallet transfer
+            async walletToWallet(contractId, amount, destinationPhone, mobileNumber) {
+                // Step 1: Simulation
+                const simulation = await this.callAPI('/wallet/transfer/wallet', 'POST', {
+                    clientNote: "NGO Program Funding",
+                    contractId: contractId,
+                    amout: amount,
+                    fees: "0",
+                    destinationPhone: destinationPhone,
+                    mobileNumber: mobileNumber
+                }, { step: 'simulation' });
+
+                // Step 2: OTP (in real scenario, this would be sent to user's phone)
+                const otpResponse = await this.callAPI('/wallet/transfer/wallet/otp', 'POST', {
+                    phoneNumber: mobileNumber
+                });
+
+                // Step 3: Confirmation
+                const confirmation = await this.callAPI('/wallet/transfer/wallet', 'POST', {
+                    mobileNumber: mobileNumber,
+                    contractId: contractId,
+                    otp: "123456", // In real app, user would input this
+                    referencedd: simulation.result.referencedd,
+                    destinationPhone: destinationPhone,
+                    fees: "0"
+                }, { step: 'confirmation' });
+
+                return confirmation;
+            }
+        }
+
+        // Dashboard Controller
+        class DashboardController {
+            constructor() {
+                this.api = new CIHWalletAPI();
+                this.lastUpdate = new Date();
+            }
+
+            async initialize() {
+                try {
+                    await this.loadWalletData();
+                    await this.loadTransactionHistory();
+                    this.initializeCharts();
+                    this.updateLastSyncTime();
+                } catch (error) {
+                    console.error('Failed to initialize dashboard:', error);
+                }
+            }
+
+            async loadWalletData() {
+                try {
+                    // Get wallet balance
+                    const balanceData = await this.api.getBalance(API_CONFIG.contractId);
+                    const balance = balanceData.result.balance[0].value;
+                    document.getElementById('walletBalance').textContent = `${balance.replace(',', '.')} MAD`;
+
+                    // Get customer info
+                    const customerInfo = await this.api.getCustomerInfo(
+                        API_CONFIG.phoneNumber,
+                        API_CONFIG.identificationType,
+                        API_CONFIG.identificationNumber
+                    );
+                    console.log('Customer info loaded:', customerInfo);
+
+                } catch (error) {
+                    console.error('Error loading wallet data:', error);
+                    document.getElementById('walletBalance').textContent = 'Error loading balance';
+                }
+            }
+
+            async loadTransactionHistory() {
+                try {
+                    const transactionsData = await this.api.getTransactionHistory(API_CONFIG.contractId);
+                    this.displayTransactions(transactionsData.result);
+                } catch (error) {
+                    console.error('Error loading transaction history:', error);
+                    document.getElementById('transactionsBody').innerHTML = 
+                        '<tr><td colspan="4" style="text-align: center; color: var(--danger);">Error loading transactions</td></tr>';
+                }
+            }
+
+            displayTransactions(transactions) {
+                const tbody = document.getElementById('transactionsBody');
+                tbody.innerHTML = '';
+
+                if (!transactions || transactions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center;">No transactions found</td></tr>';
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const row = document.createElement('tr');
+                    
+                    // Format date
+                    const date = new Date(transaction.date);
+                    const formattedDate = date.toLocaleDateString('en-GB');
+                    
+                    // Determine status and description
+                    const isIncome = transaction.isTierCashIn;
+                    const description = transaction.clientNote || `${isIncome ? 'Deposit' : 'Payment'} to ${transaction.beneficiaryFirstName} ${transaction.beneficiaryLastName}`;
+                    const status = transaction.status === '000' ? 'approved' : 'pending';
+                    
+                    row.innerHTML = `
+                        <td>${formattedDate}</td>
+                        <td>${description}</td>
+                        <td>${transaction.amount} MAD</td>
+                        <td><span class="status-badge status-${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+            }
+
+            initializeCharts() {
+                // Financial Chart
+                const financialCtx = document.getElementById('financialChart').getContext('2d');
+                new Chart(financialCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov'],
+                        datasets: [{
+                            label: 'Funds Received',
+                            data: [120, 150, 180, 90, 170, 210, 240, 200, 180, 220, 245],
+                            backgroundColor: 'rgba(74, 144, 226, 0.7)',
+                            borderColor: 'rgba(74, 144, 226, 1)',
+                            borderWidth: 1
+                        }, {
+                            label: 'Funds Disbursed',
+                            data: [80, 100, 120, 70, 110, 150, 180, 160, 140, 170, 150],
+                            backgroundColor: 'rgba(42, 157, 143, 0.7)',
+                            borderColor: 'rgba(42, 157, 143, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return value + 'k MAD';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                // Impact Chart
+                const impactCtx = document.getElementById('impactChart').getContext('2d');
+                new Chart(impactCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Education', 'Healthcare', 'Vocational Training', 'Community Development'],
+                        datasets: [{
+                            data: [45, 25, 20, 10],
+                            backgroundColor: [
+                                'rgba(74, 144, 226, 0.8)',
+                                'rgba(42, 157, 143, 0.8)',
+                                'rgba(255, 193, 7, 0.8)',
+                                'rgba(108, 117, 125, 0.8)'
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom'
+                            }
+                        }
+                    }
+                });
+            }
+
+            updateLastSyncTime() {
+                const now = new Date();
+                document.getElementById('lastSync').textContent = `Last sync: ${now.toLocaleTimeString()}`;
+                this.lastUpdate = now;
+            }
+
+            async refreshData() {
+                document.querySelector('.dashboard-cards').classList.add('loading');
+                try {
+                    await this.loadWalletData();
+                    await this.loadTransactionHistory();
+                    this.updateLastSyncTime();
+                } finally {
+                    document.querySelector('.dashboard-cards').classList.remove('loading');
+                }
+            }
+        }
+
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            const dashboard = new DashboardController();
+            dashboard.initialize();
+
+            // Refresh data every 30 seconds
+            setInterval(() => {
+                dashboard.refreshData();
+            }, 30000);
+        });
+    </script>
+</body>
+</html> 
