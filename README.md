@@ -2,11 +2,11 @@
 
 A comprehensive financial traceability and impact monitoring dashboard for NGOs, built specifically for CIH Bank's digital ecosystem.
 
-## 🚀 Overview
+## Overview
 
 This prototype demonstrates a fully functional NGO Traceability Dashboard that integrates with CIH Bank's Wallet Management API to provide real-time financial transparency, impact tracking, and loan eligibility assessment for NGOs.
 
-## ✨ Features
+##  Features
 
 - **Financial Traceability**: Real-time wallet balance and transaction monitoring
 - **Impact Analytics**: Track program outcomes and beneficiary reach
@@ -15,14 +15,14 @@ This prototype demonstrates a fully functional NGO Traceability Dashboard that i
 - **Wallet Integration**: Full CIH mobile wallet functionality
 - **Real-time Notifications**: Transaction alerts and status updates
 
-## 🛠️ Technologies Used
+##  Technologies Used
 
 - **Frontend**: HTML5, CSS3, JavaScript (ES6+)
 - **Charts**: Chart.js for data visualization
 - **Icons**: Font Awesome
 - **API Integration**: CIH Wallet Management KIT
 
-## 🔌 API Integration
+##  API Integration
 
 This prototype implements the complete CIH Wallet Management API specification:
 
@@ -39,7 +39,7 @@ This prototype implements the complete CIH Wallet Management API specification:
 - **Real-time Data**: Auto-refresh every 30 seconds
 - **Error Handling**: Graceful fallback to mock data
 
-## 🚀 Quick Start
+##  Quick Start
 
 ### Option 1: Direct Browser Opening
 ```bash
