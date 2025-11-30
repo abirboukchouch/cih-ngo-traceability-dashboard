@@ -41,8 +41,63 @@ This prototype implements the complete CIH Wallet Management API specification:
 
 ##  Quick Start
 
-### Option 1: Direct Browser Opening
-```bash
-# Download index.html and open in browser
-start index.html
-# or double-click the index.html file
+# Using Python
+python -m http.server 8000
+# Then visit http://localhost:8000
+
+Prototype Features
+Dashboard Sections:
+Financial Overview - Real-time balance and transaction history
+
+Impact Metrics - Program outcomes and beneficiary tracking
+
+Document Upload - Drag & drop financial document management
+
+Loan Eligibility - AI-powered scoring (1-3 scale)
+
+Notifications - Real-time alerts and updates
+
+Key Functionality:
+Real CIH API integration structure
+Mock data with realistic NGO scenarios
+Responsive design for mobile and desktop
+Interactive charts and data visualization
+Complete user workflow demonstration
+
+Use Case
+For NGOs:
+Track donation allocation and program spending
+
+Prove financial transparency to donors
+
+Access CIH performance-based loans
+
+Monitor social impact metrics
+
+For CIH Bank:
+Reduce risk through financial traceability
+
+Enable data-driven lending decisions
+
+Strengthen NGO banking relationships
+
+Enhance CSR and ESG positioning
+
+Future Enhancements
+Real backend API integration
+
+User authentication and multi-tenant support
+
+Document OCR and automated validation
+
+Advanced AI impact scoring
+
+Mobile app version
+
+Donor portal access
+
+Contact
+Built for CIH Bank Hackathon - Demonstrating the future of NGO banking and financial transparency.
+
+
+
