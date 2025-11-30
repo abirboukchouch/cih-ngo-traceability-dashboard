@@ -1,6 +1,6 @@
 # CIH NGO Traceability Dashboard
 
-A comprehensive financial traceability and impact monitoring dashboard for NGOs, built specifically for CIH Bank's digital ecosystem.
+A comprehensive financial traceability and impact monitoring dashboard for NGOs, built for CIH Bank's digital ecosystem.
 
 ## Overview
 
@@ -17,7 +17,7 @@ This prototype demonstrates a fully functional NGO Traceability Dashboard that i
 
 ##  Technologies Used
 
-- **Frontend**: HTML5, CSS3, JavaScript (ES6+)
+- **Frontend**: HTML5, CSS, JavaScript
 - **Charts**: Chart.js for data visualization
 - **Icons**: Font Awesome
 - **API Integration**: CIH Wallet Management KIT
