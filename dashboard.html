@@ -745,14 +745,14 @@
     <script>
         // API Configuration
         const API_CONFIG = {
-            baseURL: 'https://api.cih.ma', // Replace with actual CIH API base URL
+            baseURL: 'https://api.cih.ma', 
             contractId: 'LAN193541347060000000001', // NGO's wallet contract ID
             phoneNumber: '212700446211',
             identificationType: 'CIN',
             identificationNumber: 'BK12232'
         };
 
-        // API Service with proper CIH Wallet Management KIT endpoints
+        // API Service with CIH Wallet Management KIT endpoints
         class CIHWalletAPI {
             constructor() {
                 this.baseURL = API_CONFIG.baseURL;
@@ -997,7 +997,7 @@
                     mobileNumber: mobileNumber
                 }, { step: 'simulation' });
 
-                // Step 2: OTP (in real scenario, this would be sent to user's phone)
+                // Step 2: OTP 
                 const otpResponse = await this.callAPI('/wallet/transfer/wallet/otp', 'POST', {
                     phoneNumber: mobileNumber
                 });
